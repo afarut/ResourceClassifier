@@ -1,3 +1,5 @@
 *.swp
-*.pt
 *.csv
+*.pt
+*.bin
+*.gz

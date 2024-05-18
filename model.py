@@ -5,7 +5,8 @@ from transformers import AutoTokenizer
 import json
 import pandas as pd
 from sklearn.metrics.pairwise import cosine_similarity
-
+import fasttext.util
+import fasttext
 
 
 class ResourceClassifier:
@@ -25,6 +26,10 @@ class ResourceClassifier:
 
 		self.data = pd.read_csv("./datasets/all_embeds.csv")
 
+		fasttext.util.download_model('ru', if_exists='ignore')  
+		self.ft_model = fasttext.load_model('cc.ru.300.bin')
+
+		
 	def __call__(self, batch: list):
 		if type(batch) != list:
 			raise Exception("В качестве аргумента передайте список")
@@ -33,7 +38,8 @@ class ResourceClassifier:
 		with torch.inference_mode():
 			logits = self.rubert(**data)
 			ids = logits.argmax(dim=1)
-			embends = self.rubert.bert(**data).pooler_output.tolist()
+			embends = [self.ft_model.get_sentence_vector(line) for line in batch]
+			
 		titles = [self.classes[i] for i in ids]
 		result = []
 		for j in range(len(titles)):
@@ -41,8 +47,8 @@ class ResourceClassifier:
 			row_value = -1
 			row_index = -1
 			for i in rows.index:
-				if row_value < cosine_similarity([eval(rows["embeds"][i])], [embends[j]])[0][0]:
-					row_value = cosine_similarity([eval(rows["embeds"][i])], [embends[j]])[0][0]
+				if row_value < cosine_similarity([eval(rows["fastextembed"][i])], [embends[j]])[0][0]:
+					row_value = cosine_similarity([eval(rows["fastextembed"][i])], [embends[j]])[0][0]
 					row_index = i
 
 
