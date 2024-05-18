@@ -45,9 +45,6 @@ class ResourceClassifier:
 					row_value = cosine_similarity([eval(rows["embeds"][i])], [embends[j]])[0][0]
 					row_index = i
 
-				if row_value < cosine_similarity([eval(rows["fastextembed"][i])], [embends[j]])[0][0]:
-					row_value = cosine_similarity([eval(rows["fastextembed"][i])], [embends[j]])[0][0]
-					row_index = i
 
 			if row_value < 0:
 				result.append({"status": "error", "text": "Невозможно присвоить"})
@@ -62,4 +59,4 @@ if __name__ == "__main__":
 	model = ResourceClassifier()
 	print("-----------------Start-----------------")
 	while True:
-		print(model([input(), "dawdwa"]))
+		print(model([input()]))
