@@ -23,7 +23,7 @@ class ResourceClassifier:
 		with open('classes.json', "r", encoding="utf-8") as f:
 		    self.classes = json.load(f)
 
-		self.data = pd.read_csv("./datasets/bert_embeds.csv")
+		self.data = pd.read_csv("./datasets/all_embeds.csv")
 
 	def __call__(self, batch: list):
 		if type(batch) != list:
@@ -44,10 +44,15 @@ class ResourceClassifier:
 				if row_value < cosine_similarity([eval(rows["embeds"][i])], [embends[j]])[0][0]:
 					row_value = cosine_similarity([eval(rows["embeds"][i])], [embends[j]])[0][0]
 					row_index = i
+
+				if row_value < cosine_similarity([eval(rows["fastextembed"][i])], [embends[j]])[0][0]:
+					row_value = cosine_similarity([eval(rows["fastextembed"][i])], [embends[j]])[0][0]
+					row_index = i
+
 			if row_value < 0:
-				result.append({"status": "error", "text": "Невозможно присвоить"}) 
+				result.append({"status": "error", "text": "Невозможно присвоить"})
 			else:
-				result.append({"status": "ok", "result": {"label": self.data["Наименование"][row_index], "probability": row_value, "group": titles[j]}})
+				result.append({"status": "ok", "result": {"label": self.data["Наименование"][row_index], "probability": row_value, "group": titles[j]}, "rec-code": self.data["Код ресурса"][row_index]})
 		return result
 
 
