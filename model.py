@@ -24,7 +24,7 @@ class ResourceClassifier:
 		with open('classes.json', "r", encoding="utf-8") as f:
 		    self.classes = json.load(f)
 
-		self.data = pd.read_csv("./datasets/all_embeds.csv")
+		self.data = pd.read_csv("./all_embeds.csv")
 
 		fasttext.util.download_model('ru', if_exists='ignore')  
 		self.ft_model = fasttext.load_model('cc.ru.300.bin')
