@@ -16,9 +16,9 @@ class ResourceClassifier:
 		
 		self.rubert = RubertTinyClassifier(2309).to(device).eval()
 		self.rubert.load_state_dict(torch.load(MODEL_PATH))
+		
 		with open('classes.json', "r", encoding="utf-8") as f:
 		    self.classes = json.load(f)
-
 
 	def __call__(self, batch: list):
 		data = self.tokenizer(batch)

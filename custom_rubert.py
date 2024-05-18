@@ -1,6 +1,16 @@
+from transformers import AutoModel
+from torch import nn
+import torch
+
+
 class RubertTinyClassifier(nn.Module):
     def __init__(self, num_classes, freeze=False):
         super().__init__()
+
+        if torch.cuda.is_available():
+            device = "cuda"
+        else:
+            device = "cpu"
 
         self.bert = AutoModel.from_pretrained("cointegrated/rubert-tiny2").to(device)
         if freeze:
